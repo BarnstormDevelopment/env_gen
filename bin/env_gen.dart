@@ -1,20 +1,20 @@
-import 'package:env_gen/defaults.dart' as defaults;
 import 'package:env_gen/env_gen.dart' as env_gen;
 import 'dart:io';
 
 void main(List<String> args) {
   // Prints usage
-  if (args.contains('-h') || args.contains('help')) {
+  if (args.contains('-h') || args.contains('help') || args.isEmpty) {
     env_gen.usage();
     return;
   }
 
-  var envFilename = defaults.env_filename;
+  var envFilename = './env_files/env.json';
 
   // Runs initialization script
   if (args[0] == 'initialize') {
     stdout.writeln('Creating env-gen files and folders...');
     env_gen.createEnvTemplate();
+    return;
   }
 
   // Checks for verbose flag
@@ -51,7 +51,7 @@ void main(List<String> args) {
 
   // Process env
   var availEnvs = config.environments.keys;
-  if (args.length != 1 || !availEnvs.contains(args[0])) {
+  if (!availEnvs.contains(args[0])) {
     stderr.writeln('Error: must pass valid environment\n\tEnvironments: $availEnvs');
     env_gen.usage();
     return;

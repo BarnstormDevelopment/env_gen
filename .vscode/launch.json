@@ -1,0 +1,39 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "cwd": "./test",
+      "name": "env-gen",
+      "request": "launch",
+      "type": "dart",
+      "program": "../bin/env_gen.dart"
+    },
+    {
+      "cwd": "./test",
+      "name": "env-gen - initialize",
+      "request": "launch",
+      "type": "dart",
+      "program": "../bin/env_gen.dart",
+      "args": ["initialize","-v"]
+    },
+    {
+      "cwd": "./test",
+      "name": "env-gen - development",
+      "request": "launch",
+      "type": "dart",
+      "program": "../bin/env_gen.dart",
+      "args": ["development", "-v"]
+    },
+    {
+      "cwd": "./test",
+      "name": "env-gen - production",
+      "request": "launch",
+      "type": "dart",
+      "program": "../bin/env_gen.dart",
+      "args": ["production", "-v"]
+    }
+  ]
+}

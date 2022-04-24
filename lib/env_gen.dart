@@ -19,21 +19,30 @@ void createEnvFile(Config config, String environment, bool verbose, {String outp
     // });
   }
 
-  File(output).writeAsString('final environment = ${json.encode(config.toJson())};');
+  Directory('lib').createSync(recursive: true);
+  var stringVars = '';
+  for (var env in envVars.entries) {
+    stringVars += '\tstatic String ${env.key} = "${env.value}";\n';
+  }
+  File(output).writeAsString('class Environment {\n' +
+      stringVars +
+      '\tfinal raw = ${json.encode(envVars)};\n'
+          '}');
   if (verbose) stdout.writeln('Environment configuration written to \'$output\'');
 }
 
 void createEnvTemplate() {
   final filename = 'env.json';
-  final envDir = Directory('${Directory.current.path}/env_files')..createSync();
+  final envDir = Directory('${Directory.current.path}/env_files')..createSync(recursive: true);
 
   final name = Platform.script.path.split('/').last;
   var template = Config.template(name);
-  File('$envDir/$filename').writeAsString('final environment = ${json.encode(template)};');
+  var encoder = JsonEncoder.withIndent('   ');
+  File('${envDir.path}/$filename').writeAsString(encoder.convert(template.toJson()));
 
-  Directory('${envDir.path}/default').createSync();
+  Directory('${envDir.path}/default').createSync(recursive: true);
   for (MapEntry<String, ConfigEnvironment> env in template.environments.entries) {
-    Directory('${envDir.path}/${env.key}').createSync();
+    Directory('${envDir.path}/${env.key}').createSync(recursive: true);
   }
 }
 
@@ -62,6 +71,8 @@ void copyFiles(Config config, String environment, bool verbose) {
 
   for (var entry in combinedFiles.entries) {
     //Key is source, value is dest
+    var path = (entry.value.split('/')..removeLast()).join('/');
+    Directory(path).createSync(recursive: true);
     File(entry.key).copy(entry.value);
   }
 }
@@ -81,14 +92,15 @@ Config readConfig(String configPath) {
 }
 
 void usage() {
-  stdout.writeln('Usage:\n\tenv-gen <cmd> [flags]'
-      '\n\tcmd'
-      '\n\t\tinitialize\t\tcreates template env file and corresponding directories'
-      '\n\t\t<environment>\t\tstring representing an environment from the env.json'
-      '\n\t\thelp\t\toutputs this usage help'
-      '\n\n\tflags'
-      '\n\t\t-v\t\tturns on verbose logs'
-      '\n\t\t-f <path>\t\tdefine alternate env.json file to use'
-      '\n\t\t-o <path>\t\tdefine alternate output filepath for env.dart'
-      '\n\t\t-h\t\toutputs this usage help');
+  stdout.writeln('Usage:'
+      '\nenv-gen <cmd> [flags]'
+      '\ncmd'
+      '\n\tinitialize\t\tcreates template env file and corresponding directories'
+      '\n\t<environment>\t\tstring representing an environment from the env.json'
+      '\n\thelp\t\t\toutputs this usage help'
+      '\nflags'
+      '\n\t-v\t\t\tturns on verbose logs'
+      '\n\t-f <path>\t\tdefine alternate env.json file to use'
+      '\n\t-o <path>\t\tdefine alternate output filepath for env.dart'
+      '\n\t-h\t\t\toutputs this usage help');
 }
