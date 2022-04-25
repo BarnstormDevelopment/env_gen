@@ -5,7 +5,9 @@ This is a CLI tool used to generate environment based variable files and file su
 You can define multiple environments and utilize substitution to dynamically generate an environment variable file for your Dart projects during development and during your CI/CD pipelines.
 
 ## Getting Started
-TBD
+```
+pub global activate env_gen
+```
 
 ## Initializing
 Running `env_gen initialize` in the root of your Dart project will publish a template env.json file as well as some directory structures.
