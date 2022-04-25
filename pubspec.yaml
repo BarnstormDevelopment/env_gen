@@ -1,7 +1,8 @@
 name: env_gen
 description: CLI tool used to generate environment based variable files and file substitutions for Dart projects.
-version: 1.0.1
+version: 1.0.2
 homepage: https://github.com/BarnstormDevelopment/env_gen
+repository: https://github.com/BarnstormDevelopment/env_gen
 
 environment:
   sdk: '>=2.16.2 <3.0.0'

@@ -32,5 +32,8 @@ The destination is relative to your projects root directory.
 }
 ```
 
+## Env File
+If you need a traditional .env file, use the `-e` flag.
+
 ## Publishing Changes
 In order to generate a new env.dart file use `env_gen <environment>` for example `env_gen production`.

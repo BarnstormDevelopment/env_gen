@@ -19,6 +19,7 @@ void main(List<String> args) {
 
   // Checks for verbose flag
   var verbose = args.contains('-v');
+  var envFile = args.contains('-e');
   // Checks for alternate env file flag
   if (args.contains('-f')) {
     var i = args.indexOf('-f');
@@ -59,7 +60,7 @@ void main(List<String> args) {
   var env = args[0];
 
   // Create env file
-  env_gen.createEnvFile(config, env, verbose, output: outputPath);
+  env_gen.createEnvFile(config, env, verbose, output: outputPath, envFile: envFile);
 
   // Check for copy directories & mappers
   env_gen.copyFiles(config, env, verbose);

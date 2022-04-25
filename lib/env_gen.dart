@@ -2,7 +2,8 @@ import 'dart:convert';
 import 'dart:io';
 import 'config.dart';
 
-void createEnvFile(Config config, String environment, bool verbose, {String output = 'lib/env.dart'}) {
+void createEnvFile(Config config, String environment, bool verbose,
+    {bool envFile = false, String output = 'lib/env.dart'}) {
   Map<String, String?> envVars = {...(config.defaults.vars), ...(config.environments[environment]?.vars ?? {})};
   var platEnv = Platform.environment;
   for (var key in envVars.keys) {
@@ -29,13 +30,25 @@ void createEnvFile(Config config, String environment, bool verbose, {String outp
       '\tfinal raw = ${json.encode(envVars)};\n'
           '}');
   if (verbose) stdout.writeln('Environment configuration written to \'$output\'');
+  if (envFile) {
+    stringVars = '';
+    for (var env in envVars.entries) {
+      if (env.value?.contains(' ') ?? false) {
+        stringVars += '${env.key}="${env.value}"\n';
+      } else {
+        stringVars += '${env.key}=${env.value}\n';
+      }
+    }
+    File('.env').writeAsString(stringVars);
+
+    if (verbose) stdout.writeln('Env file written to .env');
+  }
 }
 
 void createEnvTemplate() {
   final filename = 'env.json';
   final envDir = Directory('${Directory.current.path}/env_files')..createSync(recursive: true);
-
-  final name = Platform.script.path.split('/').last;
+  final name = Directory.current.path.split('/').last;
   var template = Config.template(name);
   var encoder = JsonEncoder.withIndent('   ');
   File('${envDir.path}/$filename').writeAsString(encoder.convert(template.toJson()));
@@ -101,6 +114,7 @@ void usage() {
       '\nflags'
       '\n\t-v\t\t\tturns on verbose logs'
       '\n\t-f <path>\t\tdefine alternate env.json file to use'
+      '\n\t-e\t\tuse to output an additional .env file'
       '\n\t-o <path>\t\tdefine alternate output filepath for env.dart'
       '\n\t-h\t\t\toutputs this usage help');
 }
